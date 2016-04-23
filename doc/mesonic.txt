@@ -29,7 +29,7 @@ meson.build files.
 2. Usage                                             *mesonic-usage* *MesonInit*
 
 Use :MesonInit to initialise build directory for the first time. After that you
-can issue :make command as usual, which will produce correct |quickfix| list
+can issue |:make| command as usual, which will produce correct |quickfix| list
 no matter what current directory is. All commands work as expected from any
 subdirectory of your project.
 
@@ -39,7 +39,7 @@ can be either global or buffer local. Defaults are listed below. >
 	let b:meson_command = 'meson'
 	let b:meson_ninja_command = 'ninja'        " ninja-build on Fedora 23
 
-If you want to switch between build directories, issue MesonInit command with an
+If you want to switch between build directories, issue :MesonInit command with an
 argument. For example, to switch to 'build-special' directory, issue >
 
 	:MesonInit 'build-special'
