@@ -5,7 +5,7 @@ endif
 let current_compiler = 'meson'
 
 function! s:GetCwdRelativeToProjectDirectory(project_dir)
-	return substitute(getcwd(), fnameescape(a:project_dir), '', 'g')
+	return substitute(getcwd().'/', fnameescape(a:project_dir), '', 'g')
 endfunction
 
 " Ninja build executable (defaults to 'ninja')
@@ -31,12 +31,12 @@ function! s:SetErrorFormat(project_dir)
 	let l:project_subdir = s:GetCwdRelativeToProjectDirectory(a:project_dir)
 	let l:project_subdir_relative_to_build_dir = '../' . l:project_subdir
 	let l:old_error_format = &errorformat
-	let l:subst = l:project_subdir_relative_to_build_dir . '/%f'
+	let l:subst = l:project_subdir_relative_to_build_dir . '%f'
 	let l:rel_error_format = substitute(l:old_error_format, '%f', l:subst, 'g')
 
 	let l:meson_error_format = [
 	\	l:rel_error_format,
-	\	'%EMeson encountered an error in file ' . l:project_subdir . '/%f\, line %l\, column %c:,%Z%m',
+	\	'%EMeson encountered an error in file ' . l:project_subdir . '%f\, line %l\, column %c:,%Z%m',
 	\	l:old_error_format
 	\ ]
 
