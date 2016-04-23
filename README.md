@@ -1,4 +1,4 @@
-# Mesonic&mdash;A Vim plugin for Meson build system
+# Mesonic: A Vim plugin for Meson build system
 
 Mesonic is a plugin that uses Vim compiler infrastructure to integrate Meson
 build system into an editor with special handling of out-of-source builds. It
