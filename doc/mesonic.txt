@@ -20,16 +20,16 @@ CONTENTS                                    *mesonic-contents* *meson* *mesonic*
 ================================================================================
 1. Introduction                                                  *mesonic-intro*
 
-Mesonic is a plugin that leverages Vim compiler infrastructure to integrate
-Meson build system into an editor with special handling of out-of-source builds.
-It sets 'makeprg', 'errorformat' options and provides syntax highlighting for
+Mesonic is a plugin that uses Vim compiler infrastructure to integrate Meson
+build system into an editor with special handling of out-of-source builds. It
+sets 'makeprg', 'errorformat' options and provides syntax highlighting for
 meson.build files.
 
 ================================================================================
 2. Usage                                             *mesonic-usage* *MesonInit*
 
-Use :MesonInit to initialise build directory for the first time. After that you
-can issue |:make| command as usual, which will produce correct |quickfix| list
+Use :MesonInit to initialise build directory for the first time. After that
+you can issue |:make| command as usual, which produces correct |quickfix| list
 no matter what current directory is. All commands work as expected from any
 subdirectory of your project.
 
@@ -45,17 +45,16 @@ argument. For example, to switch to 'build-special' directory, issue >
 	:MesonInit 'build-special'
 
 The directory will be initialised if it does not exist or does not contain
-build.ninja file. As of version 1.0.0. Meson options can be added only via
+`build.ninja` file. As of the current version Meson options can be added only via
 b:meson_command variable.
 
 ================================================================================
 3. Limitations                                             *mesonic-limitations*
 
-Mesonic assumes that build directory is a subdirectory of top-level directory of
-your project, i.e. build directory is located in the same directory where your
-main meson.build file is. In all other cases it produces wrong file paths in
-|quickfix| list. Build directory name can not contain spaces and other special
-characters.
+Mesonic assumes that build directory is a subdirectory of top-level directory
+of your project, i.e. build directory is located in the same directory where
+your main `meson.build` file is. In all other cases it may produce wrong file
+paths in |quickfix| list.
 
 ================================================================================
 4. Contributing                                           *mesonic-contributing*
