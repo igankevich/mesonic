@@ -1,4 +1,5 @@
 " Vim plugin for initialising Meson build directories
+" Maintainer: Ivan Gankevich <igankevich@ya.ru>
 
 " script guard
 if exists("meson_loaded")

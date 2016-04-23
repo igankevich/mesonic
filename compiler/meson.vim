@@ -1,3 +1,6 @@
+" Compiler plugin for Meson build system
+" Maintainer: Ivan Gankevich <igankevich@ya.ru>
+
 if exists('current_compiler')
     finish
 endif
