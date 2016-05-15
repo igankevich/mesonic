@@ -13,10 +13,11 @@ syn match mesonComment "\s#.*"ms=s+1 contains=mesonTodo
 syn region mesonString start=+'+ skip=+\\\\\|\\'+ end=+'+ oneline
 
 " global Meson object
-syn keyword mesonObject meson
+syn keyword mesonObject meson host_machine target_machine
 
 " control flow
-syn keyword mesonCond if else endif
+syn keyword mesonCond if else endif elif true false and or not
+syn keyword mesonCond foreach endforeach
 
 " global builtin functions
 syn keyword mesonBuiltin add_global_arguments
@@ -83,6 +84,9 @@ syn keyword mesonBuiltin has_type
 syn keyword mesonBuiltin run
 syn keyword mesonBuiltin sizeof
 syn keyword mesonBuiltin version
+
+"host_machine / target_machine methods
+syn keyword mesonBuiltin system cpu_family cpu endian
 
 hi link mesonComment Comment
 hi link mesonTodo Todo
