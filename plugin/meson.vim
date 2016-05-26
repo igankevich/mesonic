@@ -82,3 +82,29 @@ endfunction
 
 " quick access command
 command! -nargs=? MesonInit call g:MesonInit(<args>)
+
+" gf implementation
+function! g:MesonGoToFile(filename,cmd)
+	" determine dirname of the file being edited
+	let dirname = fnamemodify(expand('%'), ':h')
+	if dirname == '.'
+		let dirname = ''
+	else
+		let dirname = dirname.'/'
+	endif
+	let name = a:filename
+	if isdirectory(a:filename)
+		" go directly to meson.build file instead of going
+		" to corresponding directory
+		let name = a:filename.'/meson.build'
+	else
+		" try to infer filename from the call to 'subdir'
+		" with string literal as an argument
+		let line = getline('.')
+		let tmp = substitute(line, '\v^\s*subdir\('."'".'(.+)'."'".'\).*', '\1', '')
+		if isdirectory(dirname.tmp)
+			let name = tmp.'/meson.build'
+		endif
+	endif
+	execute a:cmd.' '.dirname.name
+endfunction
