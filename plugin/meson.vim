@@ -108,3 +108,15 @@ function! g:MesonGoToFile(filename,cmd)
 	endif
 	execute a:cmd.' '.dirname.name
 endfunction
+
+" go to meson.build in the parent directory (if any)
+function! g:MesonGoToParentFile(cmd) 
+	" determine dirname of the file being edited
+	let dirname = fnamemodify(expand('%'), ':h')
+	let filename = dirname.'/../meson.build'
+	if filereadable(filename)
+		execute a:cmd.' '.filename
+	else
+		echo 'No parent meson.build file.'
+	endif
+endfunction
