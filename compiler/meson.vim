@@ -40,6 +40,8 @@ function! s:SetErrorFormat(project_dir)
 	let l:meson_error_format = [
 	\	l:rel_error_format,
 	\	'%EMeson encountered an error in file ' . l:project_subdir . '%f\, line %l\, column %c:,%Z%m',
+	\   '%Dninja: Entering directory `%f''',
+	\   '%f:%l.%c-%[%^:]%#: %t%[%^:]%#: %m', " vala compiler
 	\	l:old_error_format
 	\ ]
 
