@@ -41,7 +41,7 @@ function! s:SetErrorFormat(project_dir)
 	\	l:rel_error_format,
 	\	'%EMeson encountered an error in file ' . l:project_subdir . '%f\, line %l\, column %c:,%Z%m',
 	\   '%Dninja: Entering directory `%f''',
-	\   '%f:%l.%c-%[%^:]%#: %t%[%^:]%#: %m', " vala compiler
+	\   '%f:%l.%c-%[%^:]%#: %t%[%^:]%#: %m',
 	\	l:old_error_format
 	\ ]
 
