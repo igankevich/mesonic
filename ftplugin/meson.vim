@@ -10,3 +10,6 @@ nnoremap <buffer> <c-w>gf :call MesonGoToFile(expand('<cfile>'),'tabnew')<cr>
 nnoremap <buffer> <backspace> :call MesonGoToParentFile('edit')<cr>
 nnoremap <buffer> gb :call MesonGoToParentFile('edit')<cr>
 nnoremap <buffer> <c-w>gb :call MesonGoToParentFile('tabnew')<cr>
+
+" Completion for global object methods
+setlocal omnifunc=MesonOmniComplete

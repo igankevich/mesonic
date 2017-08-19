@@ -120,3 +120,93 @@ function! g:MesonGoToParentFile(cmd)
 		echo 'No parent meson.build file.'
 	endif
 endfunction
+
+" filter matching elements
+function! s:MesonFilter(keyword, list)
+	" where to show args (menu/info/none)
+	let l:meson_show_args = 'none'
+	if exists("b:meson_show_args")
+		let l:meson_show_args = b:meson_show_args
+	elseif exists("g:meson_show_args")
+		let l:meson_show_args = g:meson_show_args
+	endif
+	let result = []
+	for elem in a:list
+		if elem.word =~# '^'.a:keyword
+			let new_elem = {'word': elem.word}
+			if !empty(get(elem, 'menu', ''))
+				if l:meson_show_args ==# 'menu'
+					let new_elem.menu = elem.menu
+				elseif l:meson_show_args ==# 'info'
+					let new_elem.info = elem.menu
+				endif
+			endif
+			call add(result, new_elem)
+		endif
+	endfor
+	return result
+endfunction
+
+" complete global object member names
+function! g:MesonOmniComplete(findstart, base)
+	if a:findstart
+	    " locate the start of the member name
+		let line = getline('.')
+		let start = col('.') - 1
+		while start > 0 && line[start - 1] !=# '.'
+			let start -= 1
+			if line[start] !~# '[a-zA-Z0-9_]'
+				return -3
+			endif
+		endwhile
+		return start
+	else
+		let members = {
+			\ 'meson': [
+				\ {'word': 'add_install_script', 'menu': 'script_name, arg1, arg2, ...'},
+				\ {'word': 'add_postconf_script', 'menu': 'script_name, arg1, arg2, ...'},
+				\ {'word': 'backend'},
+				\ {'word': 'build_root'},
+				\ {'word': 'current_build_dir'},
+				\ {'word': 'current_source_dir'},
+				\ {'word': 'get_compiler', 'menu': 'language'},
+				\ {'word': 'get_cross_property', 'menu': 'propname, fallback_value'},
+				\ {'word': 'has_exe_wrapper'},
+				\ {'word': 'install_dependency_manifest', 'menu': 'output_name'},
+				\ {'word': 'is_cross_build'},
+				\ {'word': 'is_subproject'},
+				\ {'word': 'is_unity'},
+				\ {'word': 'project_name'},
+				\ {'word': 'project_version'},
+				\ {'word': 'source_root'},
+				\ {'word': 'version'},
+			\ ],
+			\ 'machine': [
+				\ {'word': 'system'},
+				\ {'word': 'cpu_family'},
+				\ {'word': 'cpu'},
+				\ {'word': 'endian'},
+				\ ]
+		\ }
+		" find the dot
+		let line = getline('.')
+		let start = col('.') - 1
+		while start > 0 && line[start - 1] !=# '.'
+			let start -= 1
+		endwhile
+		let start -= 1
+		let name_end = start-1
+		" find the object name
+		while start > 0 && line[start-1] =~# '[a-zA-Z0-9_]'
+			let start -= 1
+		endwhile
+		let object_name = line[start:name_end]
+		let result = []
+		if object_name ==# 'meson'
+			let result = members['meson']
+		elseif object_name =~# '\v(build|host|target)_machine'
+			let result = members['machine']
+		endif
+		return s:MesonFilter(a:base, result)
+	endif
+endfunction

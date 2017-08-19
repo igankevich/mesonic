@@ -37,7 +37,7 @@ You can customise meson and ninja commands with the following variables, which
 can be either global or buffer local. Defaults are listed below. >
 
 	let b:meson_command = 'meson'
-	let b:meson_ninja_command = 'ninja'        " ninja-build on Fedora 23
+	let b:meson_ninja_command = 'ninja'        " ninja-build on Fedora
 
 If you want to switch between build directories, issue :MesonInit command with an
 argument. For example, to switch to 'build-special' directory, issue >
@@ -48,13 +48,21 @@ The directory will be initialised if it does not exist or does not contain
 `build.ninja` file. As of the current version Meson options can be added only via
 b:meson_command variable.
 
+Mesonic does completion for member functions of all global objects (`meson` and
+`*_machine`) via 'omnifunc'. Mesonic can show function arguments, if you set
+the following global or buffer-local variable. >
+
+	let g:meson_show_args = 'menu'       " show arguments in a completion window
+	let g:meson_show_args = 'info'       " show arguments in a preview window
+	let g:meson_show_args = 'none'       " do not show arguments (default)
+
 ================================================================================
 3. Limitations                                             *mesonic-limitations*
 
 Mesonic assumes that build directory is a subdirectory of top-level directory
 of your project, i.e. build directory is located in the same directory where
-your main `meson.build` file is. In all other cases it may produce wrong file
-paths in |quickfix| list.
+your main `meson.build` file is, otherwise it may produce wrong file paths in
+|quickfix| list.
 
 ================================================================================
 4. Contributing                                           *mesonic-contributing*

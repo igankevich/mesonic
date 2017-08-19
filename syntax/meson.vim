@@ -14,7 +14,7 @@ syn region mesonString start=+'+ skip=+\\\\\|\\'+ end=+'+ oneline
 syn region mesonStringM start=+'''+ skip=+\\\\\|\\'+ end=+'''+
 
 " global objects
-syn keyword mesonGlobal meson host_machine target_machine
+syn keyword mesonGlobal meson host_machine target_machine build_machine
 
 " control flow
 syn keyword mesonBool true false
