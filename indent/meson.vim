@@ -42,12 +42,12 @@ function! MesonIndent(lineno)
 	let prev_line = getline(prev_lineno)
 	let amount = indent(prev_lineno)
 	" indent after keywords and brackets
-	if prev_line =~ '\v^\s*(if|else|foreach)' ||
+	if prev_line =~ '\v^\s*(if|else|elif|foreach)' ||
 	 \ prev_line =~ '\v[\(\[]\s*$'
 		let amount += &shiftwidth
 	endif
 	" unindent after keywords and brackets
-	if this_line =~ '\v^\s*(endif|else|endforeach)' ||
+	if this_line =~ '\v^\s*(endif|else|elif|endforeach)' ||
 	 \ this_line =~ '\v^\s*[\)\]],*\s*$'
 		let amount -= &shiftwidth
 	endif
