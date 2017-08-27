@@ -98,5 +98,7 @@ v1.1
     * Add file navigation commands.
 	* Add completion for global objects member functions.
 	* Add support for Vala compiler error format.
+	* Fix conditional statements indentation.
+	* Fix and update colorscheme.
 v1.0
     * Initial stable release.

@@ -29,7 +29,7 @@ The directory will be initialised if it does not exist or does not contain
 
 The usual file navigation commands, namely ``gf``, ``<c-w>f``, and ``<c-w>gf``,
 work for `subdir()` constructs. To go to ``meson.build`` file in the parent
-directory simply use ``gb`` or ``Backspace``.  Also Mesonic does completion for
+directory simply use ``gb`` or ``<backspace>``.  Also Mesonic does completion for
 member functions of all global objects (`meson` and `*_machine`). Type object
 name, dot and ``ctrl-x ctrl-o`` to trigger function name completion. Further
 customisations are documented in the help file: ``:help mesonic``.
