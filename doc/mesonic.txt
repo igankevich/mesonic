@@ -11,11 +11,13 @@
 CONTENTS                                    *mesonic-contents* *meson* *mesonic*
 
     1. Introduction .................... |mesonic-intro|
-    2. Usage ........................... |mesonic-usage|
-    3. Limitations ..................... |mesonic-limitations|
-    4. Contributing .................... |mesonic-contributing|
-    5. License ......................... |mesonic-license|
-    6. Changelog ....................... |mesonic-changelog|
+    2. Basic usage ..................... |mesonic-usage|
+    3. File navigation ................. |mesonic-navigation|
+    4. Completion ...................... |mesonic-completion|
+    5. Limitations ..................... |mesonic-limitations|
+    6. Contributing .................... |mesonic-contributing|
+    7. License ......................... |mesonic-license|
+    8. Changelog ....................... |mesonic-changelog|
 
 ================================================================================
 1. Introduction                                                  *mesonic-intro*
@@ -26,11 +28,11 @@ sets 'makeprg', 'errorformat' options and provides syntax highlighting for
 meson.build files.
 
 ================================================================================
-2. Usage                                             *mesonic-usage* *MesonInit*
+2. Basic usage                                       *mesonic-usage* *MesonInit*
 
-Use :MesonInit to initialise build directory for the first time. After that
-you can issue |:make| command as usual, which produces correct |quickfix| list
-no matter what current directory is. All commands work as expected from any
+Use :MesonInit to initialise build directory for the first time. After that you
+can issue |:make| command as usual, which produces correct |quickfix| list no
+matter what current directory is. All commands work as expected from any
 subdirectory of your project.
 
 You can customise meson and ninja commands with the following variables, which
@@ -45,19 +47,30 @@ argument. For example, to switch to 'build-special' directory, issue >
 	:MesonInit 'build-special'
 
 The directory will be initialised if it does not exist or does not contain
-`build.ninja` file. As of the current version Meson options can be added only via
-b:meson_command variable.
-
-Mesonic does completion for member functions of all global objects (`meson` and
-`*_machine`) via 'omnifunc'. Mesonic can show function arguments, if you set
-the following global or buffer-local variable. >
-
-	let g:meson_show_args = 'menu'       " show arguments in a completion window
-	let g:meson_show_args = 'info'       " show arguments in a preview window
-	let g:meson_show_args = 'none'       " do not show arguments (default)
+`build.ninja` file. As of the current version Meson options can be added only
+via b:meson_command variable.
 
 ================================================================================
-3. Limitations                                             *mesonic-limitations*
+3. File navigation                                     *mesonic-navigation* *gb*
+
+The usual file navigation commands, namely |gf|, CTRL-W f (|CTRL-W_CTRL-F|),
+and CTRL-W gf (|CTRL-W_gF|), work for `subdir()` constructs. To go to
+`meson.build` file in the parent directory simply use "gb" or "Backspace".
+
+================================================================================
+4. Completion                                               *mesonic-completion*
+
+Mesonic does completion for member functions of all global objects (`meson`
+and `*_machine`) via 'omnifunc'. Type object name, dot and CTRL-X CTRL-O
+(|i_CTRL-X_CTRL-O|) to trigger function name completion. Mesonic can show
+function arguments, if you set the following global or buffer-local variable.
+>
+	let g:meson_show_args = 'menu'   " show arguments in a completion window
+	let g:meson_show_args = 'info'   " show arguments in a preview window
+	let g:meson_show_args = 'none'   " do not show arguments (default)
+
+================================================================================
+5. Limitations                                             *mesonic-limitations*
 
 Mesonic assumes that build directory is a subdirectory of top-level directory
 of your project, i.e. build directory is located in the same directory where
@@ -65,7 +78,7 @@ your main `meson.build` file is, otherwise it may produce wrong file paths in
 |quickfix| list.
 
 ================================================================================
-4. Contributing                                           *mesonic-contributing*
+6. Contributing                                           *mesonic-contributing*
 
 This plugin was created as a result of my passion for Vim and C++ programming,
 and as a consequence of reading "Learn Vimscript the Hard Way" by Steve Losh.
@@ -74,12 +87,16 @@ Feel free to contribute or post a bug at project page:
 https://github.com/igankevich/mesonic
 
 ================================================================================
-5. License                                                     *mesonic-license*
+7. License                                                     *mesonic-license*
 
 Mesonic is GPL licensed.
 
 ================================================================================
-6. Changelog                                                 *mesonic-changelog*
+8. Changelog                                                 *mesonic-changelog*
 
-v1.0.0
+v1.1
+    * Add file navigation commands.
+	* Add completion for global objects member functions.
+	* Add support for Vala compiler error format.
+v1.0
     * Initial stable release.
