@@ -16,7 +16,7 @@ You can customise meson and ninja commands with the following variables, which
 can be either global or buffer local. Defaults are listed below.
 
 	let b:meson_command = 'meson'
-	let b:meson_ninja_command = 'ninja'        " ninja-build on Fedora 23
+	let b:meson_ninja_command = 'ninja'        " ninja-build on Fedora
 
 If you want to switch between build directories, issue ``:MesonInit`` command with an
 argument. For example, to switch to 'build-special' directory, issue
@@ -26,6 +26,13 @@ argument. For example, to switch to 'build-special' directory, issue
 The directory will be initialised if it does not exist or does not contain
 ``build.ninja`` file. As of the current version Meson options can be added only via
 ``b:meson_command`` variable.
+
+The usual file navigation commands, namely ``gf``, ``<c-w>f``, and ``<c-w>gf``,
+work for `subdir()` constructs. To go to ``meson.build`` file in the parent
+directory simply use ``gb`` or ``Backspace``.  Also Mesonic does completion for
+member functions of all global objects (`meson` and `*_machine`). Type object
+name, dot and ``ctrl-x ctrl-o`` to trigger function name completion. Further
+customisations are documented in the help file: ``:help mesonic``.
 
 ## Limitations
 
