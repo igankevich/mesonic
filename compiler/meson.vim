@@ -29,7 +29,7 @@ endfunction
 
 " Split error format on commas taking into account edge cases.
 function! s:ToList(fmt)
-	return split(a:fmt, '\([^\\]\)\@<=,\(%Z\)\@=')
+	return split(a:fmt, '\([^\\]\)\@<=,\(%Z\)\@!')
 endfunction
 
 function! s:SetErrorFormat(project_dir)
