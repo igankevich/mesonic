@@ -27,25 +27,44 @@ function! s:SetMakeProgramme(project_dir)
 	let &l:makeprg =  s:NinjaCommand() . ' -C ' . l:build_dir
 endfunction
 
+" Split error format on commas taking into account edge cases.
+function! s:ToList(fmt)
+	return split(a:fmt, '\([^\\]\)\@<=,\(%Z\)\@=')
+endfunction
+
 function! s:SetErrorFormat(project_dir)
 
-	" fix filenames for meson.build syntax errors
-	" when building from a subdirectory
+	" remove meson error format lines that were added
+	" by the previos call to SetErrorFormat
+	let l:old_error_format = s:ToList(&errorformat)
+	for line in g:meson_error_format
+		let i = index(l:old_error_format, line)
+		if i != -1
+		"	echo 'remove ' . line . ' i=' . i
+			call remove(l:old_error_format, i)
+		endif
+	endfor
+
+	" relativise filenames for meson.build syntax errors
+	" for building from a subdirectory
 	let l:project_subdir = s:GetCwdRelativeToProjectDirectory(a:project_dir)
 	let l:project_subdir_relative_to_build_dir = '../' . l:project_subdir
-	let l:old_error_format = &errorformat
 	let l:subst = l:project_subdir_relative_to_build_dir . '%f'
-	let l:rel_error_format = substitute(l:old_error_format, '%f', l:subst, 'g')
+	let l:rel_error_format = []
+	for line in l:old_error_format
+		if match(line, '%f')
+			call add(l:rel_error_format, substitute(line, '%f', l:subst, 'g'))
+		endif
+	endfor
 
-	let l:meson_error_format = [
-	\	l:rel_error_format,
+	" generate new error format lines
+	let g:meson_error_format = [
 	\	'%EMeson encountered an error in file ' . l:project_subdir . '%f\, line %l\, column %c:,%Z%m',
 	\   '%Dninja: Entering directory `%f''',
-	\   '%f:%l.%c-%[%^:]%#: %t%[%^:]%#: %m',
-	\	l:old_error_format
-	\ ]
+	\   '%f:%l.%c-%[%^:]%#: %t%[%^:]%#: %m'
+	\	] + l:rel_error_format
+	let &l:errorformat = join(g:meson_error_format + l:old_error_format, ',')
 
-	let &l:errorformat = join(l:meson_error_format, ',')
 endfunction
 
 let s:project_dir = g:MesonProjectDir()

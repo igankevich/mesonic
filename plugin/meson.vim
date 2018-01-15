@@ -6,6 +6,7 @@ if exists("meson_loaded")
     finish
 endif
 let meson_loaded = 1
+let g:meson_error_format = []
 
 function! g:MesonProjectDir()
 
