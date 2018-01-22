@@ -52,7 +52,7 @@ function! s:SetErrorFormat(project_dir)
 	let l:subst = l:project_subdir_relative_to_build_dir . '%f'
 	let l:rel_error_format = []
 	for line in l:old_error_format
-		if match(line, '%f')
+		if match(line, '%f') >= 0
 			call add(l:rel_error_format, substitute(line, '%f', l:subst, 'g'))
 		endif
 	endfor
