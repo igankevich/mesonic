@@ -17,12 +17,9 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! SyntaxCheckers_c_meson_IsAvailable() dict
-    silent !test -f meson.build > /dev/null 2>&1
-    let meson_build_exists = v:shell_error == 0
-
     return executable(self.getExec()) &&
         \ executable('meson') &&
-        \ meson_build_exists &&
+        \ filereadable('meson.build') &&
         \ syntastic#util#versionIsAtLeast(self.getVersion(), [0, 16, 0])
 endfunction
 
