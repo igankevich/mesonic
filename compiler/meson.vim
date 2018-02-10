@@ -11,20 +11,9 @@ function! s:GetCwdRelativeToProjectDirectory(project_dir)
 	return substitute(getcwd().'/', fnameescape(a:project_dir), '', 'g')
 endfunction
 
-" Ninja build executable (defaults to 'ninja')
-function! s:NinjaCommand()
-	let l:cmd = 'ninja'
-	if exists('b:meson_ninja_command')
-		let l:cmd = b:meson_ninja_command
-	elseif exists('g:meson_ninja_command')
-		let l:cmd = g:meson_ninja_command
-	endif
-	return l:cmd
-endfunction
-
 function! s:SetMakeProgramme(project_dir)
 	let l:build_dir = g:MesonBuildDir(a:project_dir)
-	let &l:makeprg =  s:NinjaCommand() . ' -C ' . l:build_dir
+	let &l:makeprg =  g:NinjaCommand() . ' -C ' . l:build_dir
 endfunction
 
 " Split error format on commas taking into account edge cases.

@@ -42,12 +42,23 @@ function! g:MesonBuildDir(project_dir)
 endfunction
 
 " Meson build executable (defaults to 'meson')
-function! s:MesonCommand()
+function! g:MesonCommand()
 	let l:cmd = 'meson'
 	if exists('b:meson_command')
 		let l:cmd = b:meson_command
 	elseif exists('g:meson_command')
 		let l:cmd = g:meson_command
+	endif
+	return l:cmd
+endfunction
+
+" Ninja build executable (defaults to 'ninja')
+function! g:NinjaCommand()
+	let l:cmd = 'ninja'
+	if exists('b:meson_ninja_command')
+		let l:cmd = b:meson_ninja_command
+	elseif exists('g:meson_ninja_command')
+		let l:cmd = g:meson_ninja_command
 	endif
 	return l:cmd
 endfunction
@@ -73,7 +84,7 @@ function! g:MesonInit(...)
 	let l:relative_build_dir = fnamemodify(l:build_dir, ':p:h:t')
 	if !filereadable(l:build_dir . '/build.ninja')
 		echo 'Initialising ' . l:relative_build_dir
-		echo system(s:MesonCommand() . ' ' . l:project_dir . ' ' . l:build_dir)
+		echo system(g:MesonCommand() . ' ' . l:project_dir . ' ' . l:build_dir)
 	else
 		echo 'Switching to ' . l:relative_build_dir
 		let g:meson_build_dir = l:relative_build_dir
