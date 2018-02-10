@@ -25,7 +25,7 @@ endfunction
 
 function! SyntaxCheckers_c_meson_GetLocList() dict
     return SyntasticMake({
-        \ 'makeprg': self.makeprgBuild({ 'exe_before': '(test -d build > /dev/null 2>&1 || meson build) &&', 'args': '-C build' }),
+        \ 'makeprg': self.makeprgBuild({ 'args': '-C build' }),
         \ 'errorformat':
         \     '%-G../%f:%s:,' .
         \     '%-G../%f:%l: %#error: %#(Each undeclared identifier is reported only%.%#,' .
