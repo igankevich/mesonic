@@ -18,7 +18,7 @@ set cpo&vim
 
 function! SyntaxCheckers_c_meson_IsAvailable() dict
     return executable(self.getExec()) &&
-        \ executable('meson') &&
+        \ executable(g:MesonCommand()) &&
         \ filereadable('meson.build') &&
         \ syntastic#util#versionIsAtLeast(self.getVersion(), [0, 16, 0])
 endfunction
@@ -44,7 +44,7 @@ endfunction
 call g:SyntasticRegistry.CreateAndRegisterChecker({
     \ 'filetype': 'c',
     \ 'name': 'meson',
-    \ 'exec': 'ninja'
+    \ 'exec': g:NinjaCommand()
     \ })
 
 let &cpo = s:save_cpo
