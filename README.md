@@ -34,6 +34,21 @@ member functions of all global objects (`meson` and `*_machine`). Type object
 name, dot and ``ctrl-x ctrl-o`` to trigger function name completion. Further
 customisations are documented in the help file: ``:help mesonic``.
 
+### Syntastic integration
+
+Mesonic provides a Syntastic syntax checker for the C language. In order to use
+it, put the following (or similar) into your ``.vimrc``.
+
+```vim
+" If there's a `meson.build` file, use meson for linting.
+autocmd FileType c call ConsiderMesonForLinting()
+function ConsiderMesonForLinting()
+    if filereadable('meson.build')
+        let g:syntastic_c_checkers = ['meson']
+    endif
+endfunction
+```
+
 ## Limitations
 
 Mesonic assumes that build directory is a subdirectory of top-level directory of
