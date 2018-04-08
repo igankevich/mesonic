@@ -28,6 +28,7 @@ syn keyword mesonBuiltin
 	\ add_languages
 	\ add_project_arguments
 	\ add_project_link_arguments
+	\ add_test_setup
 	\ assert
 	\ benchmark
 	\ build_target
@@ -36,14 +37,17 @@ syn keyword mesonBuiltin
 	\ custom_target
 	\ declare_dependency
 	\ dependency
+	\ disabler
 	\ environment
 	\ error
 	\ executable
 	\ files
+	\ find_library
 	\ find_program
 	\ generator
 	\ get_option
 	\ get_variable
+	\ gettext
 	\ import
 	\ include_directories
 	\ install_data
@@ -51,19 +55,24 @@ syn keyword mesonBuiltin
 	\ install_man
 	\ install_subdir
 	\ is_variable
+	\ jar
 	\ join_paths
 	\ library
 	\ message
+	\ option
 	\ project
 	\ run_command
 	\ run_target
 	\ set_variable
 	\ shared_library
+	\ shared_module
 	\ static_library
 	\ subdir
 	\ subproject
 	\ test
 	\ vcs_tag
+	\ warning
+
 
 hi link mesonComment Comment
 hi link mesonTodo Todo
