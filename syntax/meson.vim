@@ -24,11 +24,11 @@ syn keyword mesonRepeat foreach endforeach
 " global builtin functions
 syn keyword mesonBuiltin
 	\ add_global_arguments
-	\ add_project_arguments
 	\ add_global_link_arguments
+	\ add_languages
+	\ add_project_arguments
 	\ add_project_link_arguments
 	\ add_test_setup
-	\ add_languages
 	\ assert
 	\ benchmark
 	\ build_target
@@ -41,15 +41,15 @@ syn keyword mesonBuiltin
 	\ environment
 	\ error
 	\ executable
-	\ generator
-	\ gettext
-	\ get_option
-	\ get_variable
 	\ files
 	\ find_library
 	\ find_program
-	\ include_directories
+	\ generator
+	\ get_option
+	\ get_variable
+	\ gettext
 	\ import
+	\ include_directories
 	\ install_data
 	\ install_headers
 	\ install_man
@@ -59,19 +59,19 @@ syn keyword mesonBuiltin
 	\ join_paths
 	\ library
 	\ message
-	\ warning
 	\ option
 	\ project
-	\ run_target
 	\ run_command
+	\ run_target
 	\ set_variable
-	\ subdir
-	\ subproject
 	\ shared_library
 	\ shared_module
 	\ static_library
+	\ subdir
+	\ subproject
 	\ test
 	\ vcs_tag
+	\ warning
 
 
 hi link mesonComment Comment
