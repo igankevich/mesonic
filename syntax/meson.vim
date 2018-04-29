@@ -31,6 +31,7 @@ syn keyword mesonBuiltin
 	\ add_test_setup
 	\ assert
 	\ benchmark
+	\ both_libraries
 	\ build_target
 	\ configuration_data
 	\ configure_file
@@ -46,8 +47,8 @@ syn keyword mesonBuiltin
 	\ find_program
 	\ generator
 	\ get_option
-	\ get_variable
 	\ gettext
+	\ get_variable
 	\ import
 	\ include_directories
 	\ install_data
@@ -68,11 +69,11 @@ syn keyword mesonBuiltin
 	\ shared_module
 	\ static_library
 	\ subdir
+	\ subdir_done
 	\ subproject
 	\ test
 	\ vcs_tag
 	\ warning
-
 
 hi link mesonComment Comment
 hi link mesonTodo Todo
