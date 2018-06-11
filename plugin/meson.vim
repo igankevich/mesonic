@@ -188,6 +188,8 @@ function! g:MesonOmniComplete(findstart, base)
 				\ {'word': 'is_cross_build'},
 				\ {'word': 'is_subproject'},
 				\ {'word': 'is_unity'},
+				\ {'word': 'override_find_program', 'menu': 'progname, program'},
+				\ {'word': 'project_license'},
 				\ {'word': 'project_name'},
 				\ {'word': 'project_version'},
 				\ {'word': 'source_root'},
