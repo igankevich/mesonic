@@ -1,7 +1,7 @@
 # Mesonic: A Vim plugin for Meson build system
 
 Mesonic is a plugin that uses Vim compiler infrastructure to integrate
-[Meson build system](http://mesonbuild.com/) into an editor with special
+[Meson build system](https://mesonbuild.com/) into an editor with special
 handling of out-of-source builds. It sets 'makeprg', 'errorformat' options and
 provides syntax highlighting for ``meson.build`` files.
 
@@ -15,24 +15,47 @@ subdirectory of your project.
 You can customise meson and ninja commands with the following variables, which
 can be either global or buffer local. Defaults are listed below.
 
-	let b:meson_command = 'meson'
-	let b:meson_ninja_command = 'ninja'        " ninja-build on Fedora
+```vim
+let b:meson_command = 'meson'
+let b:meson_ninja_command = 'ninja'        " ninja-build on Fedora
+```
 
 If you want to switch between build directories, issue ``:MesonInit`` command with an
 argument. For example, to switch to 'build-special' directory, issue
 
-	:MesonInit 'build-special'
+```vim
+:MesonInit 'build-special'
+```
 
 The directory will be initialised if it does not exist or does not contain
 ``build.ninja`` file. As of the current version Meson options can be added only via
 ``b:meson_command`` variable.
 
-The usual file navigation commands, namely ``gf``, ``<c-w>f``, and ``<c-w>gf``,
-work for `subdir()` constructs. To go to ``meson.build`` file in the parent
-directory simply use ``gb`` or ``<backspace>``.  Also Mesonic does completion for
-member functions of all global objects (`meson` and `*_machine`). Type object
-name, dot and ``ctrl-x ctrl-o`` to trigger function name completion. Further
-customisations are documented in the help file: ``:help mesonic``.
+Meson options can be changed via ``:MesonConfigure`` command:
+
+```vim
+" change install prefix to $HOME/.local
+:MesonConfigure -Dprefix=$HOME/.local
+
+" debug build with address sanitizer
+:MesonConfigure -Dbuildtype=debug -Db_sanitize=address -Dcpp_args=""
+
+" fully optimised build
+:MesonConfigure -Dbuildtype=release -Db_sanitize=none -Dcpp_args="-march=native"
+```
+
+The plugin completes partially written arguments and current argument values,
+just hit <kbd>TAB</kbd> at any point in the command line.
+
+The usual file navigation commands, namely <kbd>g</kbd><kbd>f</kbd>,
+<kbd>Ctrl</kbd>+<kbd>w</kbd><kbd>f</kbd>, and
+<kbd>Ctrl</kbd>+<kbd>w</kbd><kbd>g</kbd><kbd>f</kbd>, work for `subdir()`
+constructs. To go to ``meson.build`` file in the parent directory simply use
+<kbd>g</kbd><kbd>b</kbd> or <kbd>Backspace</kbd>. Also Mesonic does completion
+for member functions of all global objects (`meson` and `*_machine`). Type
+object name, dot and <kbd>Ctrl</kbd>+<kbd>x</kbd>+<kbd>o</kbd> to trigger
+function name completion.  Further customisations are documented in the
+help file: ``:help mesonic``.
 
 ### Syntastic integration
 

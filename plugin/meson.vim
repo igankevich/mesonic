@@ -224,3 +224,81 @@ function! g:MesonOmniComplete(findstart, base)
 		return s:MesonFilter(a:base, result)
 	endif
 endfunction
+
+" meson configure wrapper
+function! MesonConfigure(arguments)
+	if len(a:arguments) == 0
+		echo 'MesonConfigure: No arguments given'
+		return
+	endif
+	let cmd = MesonCommand() . ' configure ' . a:arguments . ' ' . MesonBuildDir(MesonProjectDir())
+	let output = system(cmd)
+	if v:shell_error
+		echo 'MesonConfigure:'
+		echo output
+	else
+		echo 'MesonConfigure: OK'
+	endif
+endfunction
+
+" meson introspect wrapper
+function! MesonIntrospect(argument)
+	let cmd = MesonCommand() . ' introspect ' . a:argument . ' ' . MesonBuildDir(MesonProjectDir())
+	silent let output = system(cmd)
+	return json_decode(output)
+endfunction
+
+" auto-complete meson configure arguments
+function! MesonConfigureComplete(ArgLead, CmdLine, CursorPos)
+	let result = []
+	let options = MesonIntrospect('--buildoptions')
+	let key = ''
+	let val = ''
+	let branch = 0
+	let keyval = split(a:ArgLead, '=')
+	if len(keyval) > 0
+		let key = keyval[0]
+		if key =~# '^-D'
+			let key = key[2:-1] 
+		endif
+	endif
+	if a:ArgLead =~# '=$'
+		let branch = 1
+	elseif len(keyval) > 1
+		let val = keyval[1]
+		let branch = 1
+	endif
+	for opt in options
+		if branch == 0
+			if opt.name =~# key
+				call add(result, '-D' . opt.name . '=')
+			endif
+		else
+			if opt.name ==# key
+				let choices = []
+				if opt.type ==# 'boolean'
+					let choices = ['false', 'true']
+				elseif opt.type ==# 'combo'
+					let choices = opt.choices
+				elseif opt.type ==# 'string'
+					let choices = [opt.value]
+				elseif opt.type ==# 'array'
+					let choices = ['"' . join(opt.value, ' ') . '"']
+				endif
+				if len(choices) > 0
+					for choice in choices
+						if val ==# '' || choice =~# val
+							call add(result, '-D' . key . '=' . choice)
+						endif
+					endfor
+				endif
+				break
+			endif
+		endif
+	endfor
+	return result
+endfunction
+
+" quick access command
+command! -nargs=* -complete=customlist,MesonConfigureComplete MesonConfigure
+	\ call MesonConfigure('<args>')

@@ -12,12 +12,13 @@ CONTENTS                                    *mesonic-contents* *meson* *mesonic*
 
     1. Introduction .................... |mesonic-intro|
     2. Basic usage ..................... |mesonic-usage|
-    3. File navigation ................. |mesonic-navigation|
-    4. Completion ...................... |mesonic-completion|
-    5. Limitations ..................... |mesonic-limitations|
-    6. Contributing .................... |mesonic-contributing|
-    7. License ......................... |mesonic-license|
-    8. Changelog ....................... |mesonic-changelog|
+    3. Meson options ................... |mesonic-options|
+    4. File navigation ................. |mesonic-navigation|
+    5. Completion ...................... |mesonic-completion|
+    6. Limitations ..................... |mesonic-limitations|
+    7. Contributing .................... |mesonic-contributing|
+    8. License ......................... |mesonic-license|
+    9. Changelog ....................... |mesonic-changelog|
 
 ================================================================================
 1. Introduction                                                  *mesonic-intro*
@@ -48,17 +49,47 @@ argument. For example, to switch to 'build-special' directory, issue >
 
 The directory will be initialised if it does not exist or does not contain
 `build.ninja` file. As of the current version Meson options can be added only
-via b:meson_command variable.
+via b:meson_command variable. Later options can be changed via
+|:MesonConfigure| command.
 
 ================================================================================
-3. File navigation                                     *mesonic-navigation* *gb*
+3. Meson options                                *mesonic-options* *:MesonConfigure*
+
+Meson options are changed using :MesonConfigure command like in the following
+examples. >
+
+	" change install prefix to $HOME/.local
+	:MesonConfigure -Dprefix=$HOME/.local
+
+	" debug build with address sanitizer
+	:MesonConfigure -Dbuildtype=debug -Db_sanitize=address -Dcpp_args=""
+
+	" fully optimised build
+	:MesonConfigure -Dbuildtype=release -Db_sanitize=none -Dcpp_args="-march=native"
+
+The plugin completes partially written arguments and their current values. If
+you write >
+
+	:MesonConfigure prefix
+
+and then hit `TAB`, the command line becomes >
+
+	:MesonConfigure -Dprefix=
+
+If you then hit `TAB`, one more time it becomes >
+
+	:MesonConfigure -Dprefix=/usr/local " /usr/local is the current prefix value
+
+
+================================================================================
+4. File navigation                                     *mesonic-navigation* *gb*
 
 The usual file navigation commands, namely |gf|, CTRL-W f (|CTRL-W_CTRL-F|),
 and CTRL-W gf (|CTRL-W_gF|), work for `subdir()` constructs. To go to
 `meson.build` file in the parent directory simply use "gb" or "Backspace".
 
 ================================================================================
-4. Completion                                               *mesonic-completion*
+5. Completion                                               *mesonic-completion*
 
 Mesonic does completion for member functions of all global objects (`meson`
 and `*_machine`) via 'omnifunc'. Type object name, dot and CTRL-X CTRL-O
@@ -70,7 +101,7 @@ function arguments, if you set the following global or buffer-local variable.
 	let g:meson_show_args = 'none'   " do not show arguments (default)
 
 ================================================================================
-5. Limitations                                             *mesonic-limitations*
+6. Limitations                                             *mesonic-limitations*
 
 Mesonic assumes that build directory is a subdirectory of top-level directory
 of your project, i.e. build directory is located in the same directory where
@@ -78,7 +109,7 @@ your main `meson.build` file is, otherwise it may produce wrong file paths in
 |quickfix| list.
 
 ================================================================================
-6. Contributing                                           *mesonic-contributing*
+7. Contributing                                           *mesonic-contributing*
 
 This plugin was created as a result of my passion for Vim and C++ programming,
 and as a consequence of reading "Learn Vimscript the Hard Way" by Steve Losh.
@@ -87,12 +118,15 @@ Feel free to contribute or post a bug at project page:
 https://github.com/igankevich/mesonic
 
 ================================================================================
-7. License                                                     *mesonic-license*
+8. License                                                     *mesonic-license*
 
 Mesonic is GPL licensed.
 
 ================================================================================
-8. Changelog                                                 *mesonic-changelog*
+9. Changelog                                                 *mesonic-changelog*
+
+v1.2
+	* Add |:MesonConfigure| vim commmand with argument completion.
 
 v1.1
     * Add file navigation commands.
