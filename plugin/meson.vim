@@ -228,16 +228,42 @@ endfunction
 " meson configure wrapper
 function! MesonConfigure(arguments)
 	if len(a:arguments) == 0
-		echo 'MesonConfigure: No arguments given'
-		return
-	endif
-	let cmd = MesonCommand() . ' configure ' . a:arguments . ' ' . MesonBuildDir(MesonProjectDir())
-	let output = system(cmd)
-	if v:shell_error
-		echo 'MesonConfigure:'
-		echo output
+		let options = MesonIntrospect('--buildoptions')
+		" sanitise
+		for opt in options
+			if opt.type ==# 'boolean'
+				if opt.value == v:true
+					let opt.value = 'true'
+				endif
+				if opt.value == v:false
+					let opt.value = 'false'
+				endif
+			endif
+		endfor
+		" calculate column width
+		let width = [0,0]
+		for opt in options
+			let w = [len(opt.name), len(string(opt.value))]
+			for i in [0,1]
+				if w[i] > width[i]
+					let width[i] = w[i]
+				endif
+			endfor
+		endfor
+		let format = '%' . width[0] . 's  %-' . width[1] . 's  %s'
+		" print options
+		for opt in options
+			echo printf(format, opt.name, opt.value, opt.description)
+		endfor
 	else
-		echo 'MesonConfigure: OK'
+		let cmd = MesonCommand() . ' configure ' . a:arguments . ' ' . MesonBuildDir(MesonProjectDir())
+		let output = system(cmd)
+		if v:shell_error
+			echo 'MesonConfigure:'
+			echo output
+		else
+			echo 'MesonConfigure: OK'
+		endif
 	endif
 endfunction
 
