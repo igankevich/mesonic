@@ -80,6 +80,7 @@ If you then hit `TAB`, one more time it becomes >
 
 	:MesonConfigure -Dprefix=/usr/local " /usr/local is the current prefix value
 
+When called without arguments, :MesonConfigure shows current configuration.
 
 ================================================================================
 4. File navigation                                     *mesonic-navigation* *gb*

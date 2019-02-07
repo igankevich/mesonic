@@ -42,6 +42,9 @@ Meson options can be changed via ``:MesonConfigure`` command:
 
 " fully optimised build
 :MesonConfigure -Dbuildtype=release -Db_sanitize=none -Dcpp_args="-march=native"
+
+" show current configuration
+:MesonConfigure
 ```
 
 The plugin completes partially written arguments and current argument values,
