@@ -126,6 +126,12 @@ function! g:MesonGoToParentFile(cmd)
 	" determine dirname of the file being edited
 	let dirname = fnamemodify(expand('%'), ':h')
 	let filename = dirname.'/../meson.build'
+	" try to remove dots in the path
+	let modifiers = ':.'
+	if filename[0] ==# '/'
+		let modifiers = ':p'
+	endif
+	let filename = fnamemodify(filename, modifiers)
 	if filereadable(filename)
 		execute a:cmd.' '.filename
 	else
