@@ -29,11 +29,11 @@ sets 'makeprg', 'errorformat' options and provides syntax highlighting for
 meson.build files.
 
 ================================================================================
-2. Basic usage                                       *mesonic-usage* *MesonInit*
+2. Basic usage                                      *mesonic-usage* *:MesonInit*
 
-Use :MesonInit to initialise build directory for the first time. After that you
-can issue |:make| command as usual, which produces correct |quickfix| list no
-matter what current directory is. All commands work as expected from any
+Use |:MesonInit| to initialise build directory for the first time. After that
+you can issue |:make| command as usual, which produces correct |quickfix| list
+no matter what current directory is. All commands work as expected from any
 subdirectory of your project.
 
 You can customise meson and ninja commands with the following variables, which
@@ -42,10 +42,11 @@ can be either global or buffer local. Defaults are listed below. >
 	let b:meson_command = 'meson'
 	let b:meson_ninja_command = 'ninja'        " ninja-build on Fedora
 
-If you want to switch between build directories, issue :MesonInit command with an
-argument. For example, to switch to 'build-special' directory, issue >
+If you want to switch between build directories, issue |:MesonInit| command
+with an argument. For example, to switch to `build-debug` directory, issue >
 
-	:MesonInit 'build-special'
+	:MesonInit build-debug    " switch for the current buffer
+	:MesonInit! build-debug   " switch for all buffers
 
 The directory will be initialised if it does not exist or does not contain
 `build.ninja` file. As of the current version Meson options can be added only
@@ -55,7 +56,7 @@ via b:meson_command variable. Later options can be changed via
 ================================================================================
 3. Meson options                                *mesonic-options* *:MesonConfigure*
 
-Meson options are changed using :MesonConfigure command like in the following
+Meson options are changed using |:MesonConfigure| command like in the following
 examples. >
 
 	" change install prefix to $HOME/.local
@@ -80,7 +81,7 @@ If you then hit `TAB`, one more time it becomes >
 
 	:MesonConfigure -Dprefix=/usr/local " /usr/local is the current prefix value
 
-When called without arguments, :MesonConfigure shows current configuration.
+When called without arguments, |:MesonConfigure| shows current configuration.
 
 ================================================================================
 4. File navigation                                     *mesonic-navigation* *gb*
@@ -128,6 +129,7 @@ Mesonic is GPL licensed.
 
 v1.2
 	* Add |:MesonConfigure| vim commmand with argument completion.
+	* Add bang argument to |:MesonInit|.
 
 v1.1
     * Add file navigation commands.

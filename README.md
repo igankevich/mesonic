@@ -20,16 +20,17 @@ let b:meson_command = 'meson'
 let b:meson_ninja_command = 'ninja'        " ninja-build on Fedora
 ```
 
-If you want to switch between build directories, issue ``:MesonInit`` command with an
-argument. For example, to switch to 'build-special' directory, issue
+If you want to switch between build directories, issue ``:MesonInit`` command
+with an argument. For example, to switch to ``build-debug`` directory, issue
 
 ```vim
-:MesonInit 'build-special'
+:MesonInit build-debug    " switch for the current buffer
+:MesonInit! build-debug   " switch for all buffers
 ```
 
 The directory will be initialised if it does not exist or does not contain
-``build.ninja`` file. As of the current version Meson options can be added only via
-``b:meson_command`` variable.
+``build.ninja`` file. As of the current version Meson options can be added only
+via ``b:meson_command`` variable.
 
 Meson options can be changed via ``:MesonConfigure`` command:
 

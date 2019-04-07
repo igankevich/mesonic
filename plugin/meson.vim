@@ -64,14 +64,10 @@ function! g:NinjaCommand()
 endfunction
 
 " make build directory and init meson build system in it
-function! g:MesonInit(...)
-	if a:0 > 1
-		echoerr 'Too many arguments to MesonInit function. Usage: MesonInit <build-dir>'
-		return
-	endif
+function! g:MesonInit(directory, bang)
 	let l:project_dir = g:MesonProjectDir()
-	if a:0 == 1
-		let g:meson_build_dir = a:1
+	if len(a:directory) > 0
+		let g:meson_build_dir = a:directory
 	endif
 	let l:build_dir = g:MesonBuildDir(l:project_dir)
 	if !filereadable(l:project_dir . '/meson.build')
@@ -89,11 +85,11 @@ function! g:MesonInit(...)
 		echo 'Switching to ' . l:relative_build_dir
 		let g:meson_build_dir = l:relative_build_dir
 	endif
-	compiler meson
+	execute 'compiler' . a:bang . ' meson'
 endfunction
 
 " quick access command
-command! -nargs=? MesonInit call g:MesonInit(<args>)
+command! -nargs=? -bang MesonInit call g:MesonInit('<args>', '<bang>')
 
 " gf implementation
 function! g:MesonGoToFile(filename,cmd)
