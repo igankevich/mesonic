@@ -11,9 +11,27 @@ function! s:GetCwdRelativeToProjectDirectory(project_dir)
 	return substitute(getcwd().'/', fnameescape(a:project_dir), '', 'g')
 endfunction
 
-function! s:SetMakeProgramme(project_dir)
-	let l:build_dir = g:MesonBuildDir(a:project_dir)
-	let &l:makeprg =  g:NinjaCommand() . ' -C ' . l:build_dir
+function! s:IsLocalOption()
+	let l:local = 1
+	let l:old_g_errorformat = &g:errorformat
+	let l:old_l_errorformat = &l:errorformat
+	CompilerSet errorformat=meson
+	if &g:errorformat ==# 'meson'
+		let &g:errorformat = l:old_g_errorformat
+		let l:local = 0
+	else
+		let &l:errorformat = l:old_l_errorformat
+	endif
+	return l:local
+endfunction
+
+function! s:SetMakeProgramme(project_dir, local)
+	let l:prg = g:NinjaCommand() . ' -C ' . g:MesonBuildDir(a:project_dir)
+	if a:local
+		let &l:makeprg = l:prg
+	else
+		let &makeprg = l:prg
+	endif
 endfunction
 
 " Split error format on commas taking into account edge cases.
@@ -21,7 +39,7 @@ function! s:ToList(fmt)
 	return split(a:fmt, '\([^\\]\)\@<=,\(%Z\)\@!')
 endfunction
 
-function! s:SetErrorFormat(project_dir)
+function! s:SetErrorFormat(project_dir, local)
 
 	" remove meson error format lines that were added
 	" by the previos call to SetErrorFormat
@@ -52,10 +70,16 @@ function! s:SetErrorFormat(project_dir)
 	\   '%Dninja: Entering directory `%f''',
 	\   '%f:%l.%c-%[%^:]%#: %t%[%^:]%#: %m'
 	\	] + l:rel_error_format
-	let &l:errorformat = join(g:meson_error_format + l:old_error_format, ',')
+	let l:fmt = join(g:meson_error_format + l:old_error_format, ',')
 
+	if a:local
+		let &l:errorformat = l:fmt
+	else
+		let &errorformat = l:fmt
+	endif
 endfunction
 
+let s:local = s:IsLocalOption()
 let s:project_dir = g:MesonProjectDir()
-call s:SetMakeProgramme(s:project_dir)
-call s:SetErrorFormat(s:project_dir)
+call s:SetMakeProgramme(s:project_dir, s:local)
+call s:SetErrorFormat(s:project_dir, s:local)
