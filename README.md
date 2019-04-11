@@ -24,8 +24,9 @@ If you want to switch between build directories, issue ``:MesonInit`` command
 with an argument. For example, to switch to ``build-debug`` directory, issue
 
 ```vim
-:MesonInit build-debug    " switch for the current buffer
-:MesonInit! build-debug   " switch for all buffers
+:MesonInit build-debug         " switch for the current buffer
+:MesonInit! build-debug        " switch for the current and new buffers
+:bufdo MesonInit! build-debug  " switch for all existing and new buffers
 ```
 
 The directory will be initialised if it does not exist or does not contain
