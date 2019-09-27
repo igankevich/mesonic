@@ -14,6 +14,16 @@ setlocal indentkeys=0(,0),0[,0],o,O
 setlocal indentkeys+==if,=endif,=else,=elif,=foreach,=endforeach
 setlocal indentexpr=MesonIndent(v:lnum)
 
+if exists('*shiftwidth')
+ 	func s:shiftwidth()
+		return shiftwidth()
+	endfunc
+else
+	func s:shiftwidth()
+		return &sw
+	endfunc
+endif
+
 function! s:GetPreviousLineNumberIgnoringComments(lineno)
 	if a:lineno == 0
 		return -1
@@ -44,12 +54,12 @@ function! MesonIndent(lineno)
 	" indent after keywords and brackets
 	if prev_line =~ '\v^\s*(if|else|elif|foreach)' ||
 	 \ prev_line =~ '\v[\(\[]\s*$'
-		let amount += &shiftwidth
+		let amount += s:shiftwidth()
 	endif
 	" unindent after keywords and brackets
 	if this_line =~ '\v^\s*(endif|else|elif|endforeach)' ||
 	 \ this_line =~ '\v^\s*[\)\]],*\s*$'
-		let amount -= &shiftwidth
+		let amount -= s:shiftwidth()
 	endif
 	return amount
 endfunction
