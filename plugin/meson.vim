@@ -89,7 +89,8 @@ function! g:MesonInit(directory, bang)
 endfunction
 
 " quick access command
-command! -nargs=? -bang MesonInit call g:MesonInit('<args>', '<bang>')
+command! -nargs=? -bang -complete=dir MesonInit
+    \ call g:MesonInit('<args>', '<bang>')
 
 " gf implementation
 function! g:MesonGoToFile(filename,cmd)
