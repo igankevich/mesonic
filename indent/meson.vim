@@ -15,7 +15,7 @@ setlocal indentkeys+==if,=endif,=else,=elif,=foreach,=endforeach
 setlocal indentexpr=MesonIndent(v:lnum)
 
 if exists('*shiftwidth')
- 	func s:shiftwidth()
+ 	func! s:shiftwidth()
 		return shiftwidth()
 	endfunc
 else
