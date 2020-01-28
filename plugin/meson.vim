@@ -75,7 +75,7 @@ function! g:MesonInit(directory, bang)
 		return
 	endif
 	if !isdirectory(l:build_dir)
-		call mkdir(l:build_dir)
+		call mkdir(l:build_dir, "p")
 	endif
 	let l:relative_build_dir = fnamemodify(l:build_dir, ':p:h:t')
 	if !filereadable(l:build_dir . '/build.ninja')
