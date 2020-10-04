@@ -29,6 +29,7 @@ syn keyword mesonBuiltin
     \ add_project_arguments
     \ add_project_link_arguments
     \ add_test_setup
+    \ alias_target
     \ assert
     \ benchmark
     \ both_libraries
@@ -55,6 +56,7 @@ syn keyword mesonBuiltin
     \ install_headers
     \ install_man
     \ install_subdir
+    \ is_disabler
     \ is_variable
     \ jar
     \ join_paths
@@ -71,6 +73,7 @@ syn keyword mesonBuiltin
     \ subdir
     \ subdir_done
     \ subproject
+    \ summary
     \ test
     \ vcs_tag
     \ warning
