@@ -4,7 +4,7 @@
 " Based on conf.vim by Bram Moolenaar
 
 if exists("b:current_syntax")
-	finish
+    finish
 endif
 
 syn keyword mesonTodo contained TODO FIXME XXX
@@ -23,57 +23,57 @@ syn keyword mesonRepeat foreach endforeach
 
 " global builtin functions
 syn keyword mesonBuiltin
-	\ add_global_arguments
-	\ add_global_link_arguments
-	\ add_languages
-	\ add_project_arguments
-	\ add_project_link_arguments
-	\ add_test_setup
-	\ assert
-	\ benchmark
-	\ both_libraries
-	\ build_target
-	\ configuration_data
-	\ configure_file
-	\ custom_target
-	\ declare_dependency
-	\ dependency
-	\ disabler
-	\ environment
-	\ error
-	\ executable
-	\ files
-	\ find_library
-	\ find_program
-	\ generator
-	\ get_option
-	\ gettext
-	\ get_variable
-	\ import
-	\ include_directories
-	\ install_data
-	\ install_headers
-	\ install_man
-	\ install_subdir
-	\ is_variable
-	\ jar
-	\ join_paths
-	\ library
-	\ message
-	\ option
-	\ project
-	\ run_command
-	\ run_target
-	\ set_variable
-	\ shared_library
-	\ shared_module
-	\ static_library
-	\ subdir
-	\ subdir_done
-	\ subproject
-	\ test
-	\ vcs_tag
-	\ warning
+    \ add_global_arguments
+    \ add_global_link_arguments
+    \ add_languages
+    \ add_project_arguments
+    \ add_project_link_arguments
+    \ add_test_setup
+    \ assert
+    \ benchmark
+    \ both_libraries
+    \ build_target
+    \ configuration_data
+    \ configure_file
+    \ custom_target
+    \ declare_dependency
+    \ dependency
+    \ disabler
+    \ environment
+    \ error
+    \ executable
+    \ files
+    \ find_library
+    \ find_program
+    \ generator
+    \ get_option
+    \ gettext
+    \ get_variable
+    \ import
+    \ include_directories
+    \ install_data
+    \ install_headers
+    \ install_man
+    \ install_subdir
+    \ is_variable
+    \ jar
+    \ join_paths
+    \ library
+    \ message
+    \ option
+    \ project
+    \ run_command
+    \ run_target
+    \ set_variable
+    \ shared_library
+    \ shared_module
+    \ static_library
+    \ subdir
+    \ subdir_done
+    \ subproject
+    \ test
+    \ vcs_tag
+    \ warning
 
 hi link mesonComment Comment
 hi link mesonTodo Todo

@@ -4,7 +4,7 @@
 " Based on conf.vim by Bram Moolenaar
 
 if exists("b:current_syntax")
-	finish
+    finish
 endif
 
 syn region mesonString start=+'+ skip=+\\\\\|\\'+ end=+'+ oneline
