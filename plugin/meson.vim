@@ -77,11 +77,19 @@ function! g:MesonInit(directory, bang)
     if !isdirectory(l:build_dir)
         call mkdir(l:build_dir, "p")
     endif
-    let l:relative_build_dir = fnamemodify(l:build_dir, ':p:h:t')
     if !filereadable(l:build_dir . '/build.ninja')
-        echo 'Initialising ' . l:relative_build_dir
-        echo system(g:MesonCommand() . ' ' . l:project_dir . ' ' . l:build_dir)
+        let oldmakeprg = &l:makeprg
+        let olderrorformat = &l:errorformat
+        let &l:makeprg = g:MesonCommand() . ' ' . l:project_dir . ' ' . l:build_dir
+        let &l:errorformat = '%f:%l:%c: %m'
+        try
+            make
+        finally
+            let &l:makeprg = oldmakeprg
+            let &l:errorformat = olderrorformat
+        endtry
     else
+        let l:relative_build_dir = fnamemodify(l:build_dir, ':p:h:t')
         echo 'Switching to ' . l:relative_build_dir
         let g:meson_build_dir = l:relative_build_dir
     endif
