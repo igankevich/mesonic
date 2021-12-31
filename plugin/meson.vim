@@ -278,8 +278,8 @@ endfunction
 
 " meson run wrapper
 function! MesonRun(arguments)
+    let options = MesonIntrospect('--targets')
     if len(a:arguments) == 0
-        let options = MesonIntrospect('--targets')
         " calculate column width
         let width = [0,0]
         for opt in options
@@ -297,6 +297,11 @@ function! MesonRun(arguments)
         endfor
     else
         let cmd = MesonBuildDir(MesonProjectDir()) . a:arguments
+        for opt in options
+            if opt.name == a:arguments
+                let cmd = opt.filename[0]
+            endif
+        endfor
         let output = system(cmd)
         if v:shell_error
             echo 'MesonRun: ERROR'
