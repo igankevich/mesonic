@@ -276,6 +276,42 @@ function! MesonConfigure(arguments)
     endif
 endfunction
 
+" meson run wrapper
+function! MesonRun(arguments)
+    let options = MesonIntrospect('--targets')
+    if len(a:arguments) == 0
+        " calculate column width
+        let width = [0,0]
+        for opt in options
+            let w = [len(opt.name), len(string(opt.value))]
+            for i in [0,1]
+                if w[i] > width[i]
+                    let width[i] = w[i]
+                endif
+            endfor
+        endfor
+        let format = '%' . width[0] . 's  %-' . width[1] . 's  %s'
+        " print options
+        for opt in options
+            echo printf(format, opt.name, opt.value, opt.description)
+        endfor
+    else
+        let cmd = MesonBuildDir(MesonProjectDir()) . a:arguments
+        for opt in options
+            if opt.name == a:arguments
+                let cmd = opt.filename[0]
+            endif
+        endfor
+        let output = system(cmd)
+        if v:shell_error
+            echo 'MesonRun: ERROR'
+        else
+            echo 'MesonRun: OK'
+        endif
+        echo output
+    endif
+endfunction
+
 " meson introspect wrapper
 function! MesonIntrospect(argument)
     let cmd = MesonCommand() . ' introspect ' . a:argument . ' ' . MesonBuildDir(MesonProjectDir())
@@ -334,6 +370,21 @@ function! MesonConfigureComplete(ArgLead, CmdLine, CursorPos)
     return result
 endfunction
 
+" auto-complete meson run arguments
+function! MesonRunComplete(ArgLead, CmdLine, CursorPos)
+    let result = []
+    let options = MesonIntrospect('--targets')
+    let key = a:ArgLead
+    for opt in options
+        if opt.name =~# key
+            call add(result, opt.name)
+        endif
+    endfor
+    return result
+endfunction
+
 " quick access command
 command! -nargs=* -complete=customlist,MesonConfigureComplete MesonConfigure
     \ call MesonConfigure('<args>')
+command! -nargs=* -complete=customlist,MesonRunComplete MesonRun
+    \ call MesonRun('<args>')
