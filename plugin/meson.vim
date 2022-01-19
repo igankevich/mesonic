@@ -296,13 +296,26 @@ function! MesonRun(arguments)
             echo printf(format, opt.name, opt.value, opt.description)
         endfor
     else
-        let cmd = MesonBuildDir(MesonProjectDir()) . a:arguments
-        for opt in options
-            if opt.name == a:arguments
-                let cmd = opt.filename[0]
+        let cmd = a:arguments
+        let cmd_opts = []
+        let target_found = 0
+        for arg in split(a:arguments)
+            if ! target_found
+              for opt in options
+                  if opt.name == arg
+                      let cmd = opt.filename[0]
+                      let target_found = 1
+                      break
+                  endif
+              endfor
+              if !target_found
+                call add(cmd_opts, arg)
+              endif
+            else
+                call add(cmd_opts, arg)
             endif
         endfor
-        let output = system(cmd)
+        let output = system(cmd . ' '. join(cmd_opts) )
         if v:shell_error
             echo 'MesonRun: ERROR'
         else
