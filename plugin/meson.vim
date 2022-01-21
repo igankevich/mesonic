@@ -283,7 +283,7 @@ function! MesonRun(arguments)
         " calculate column width
         let width = [0,0]
         for opt in options
-            let w = [len(opt.name), len(string(opt.value))]
+            let w = [len(opt.name), len(string(opt.filename[0]))]
             for i in [0,1]
                 if w[i] > width[i]
                     let width[i] = w[i]
@@ -293,16 +293,29 @@ function! MesonRun(arguments)
         let format = '%' . width[0] . 's  %-' . width[1] . 's  %s'
         " print options
         for opt in options
-            echo printf(format, opt.name, opt.value, opt.description)
+            echo printf(format, opt.name, opt.filename[0], opt.type)
         endfor
     else
-        let cmd = MesonBuildDir(MesonProjectDir()) . a:arguments
-        for opt in options
-            if opt.name == a:arguments
-                let cmd = opt.filename[0]
+        let cmd = a:arguments
+        let cmd_opts = []
+        let target_found = 0
+        for arg in split(a:arguments)
+            if ! target_found
+              for opt in options
+                  if opt.name == arg
+                      let cmd = opt.filename[0]
+                      let target_found = 1
+                      break
+                  endif
+              endfor
+              if !target_found
+                call add(cmd_opts, arg)
+              endif
+            else
+                call add(cmd_opts, arg)
             endif
         endfor
-        let output = system(cmd)
+        let output = system(cmd . ' '. join(cmd_opts) )
         if v:shell_error
             echo 'MesonRun: ERROR'
         else
