@@ -237,7 +237,12 @@ endfunction
 " meson configure wrapper
 function! MesonConfigure(arguments)
     if len(a:arguments) == 0
-        let options = MesonIntrospect('--buildoptions')
+        try
+            let options = MesonIntrospect('--buildoptions')
+        catch
+            echom 'Error parsing installation, was :MesonInit executed?'
+            return
+        endtry
         " sanitise
         for opt in options
             if opt.type ==# 'boolean'
@@ -315,8 +320,15 @@ function! MesonRun(arguments)
                 call add(cmd_opts, arg)
             endif
         endfor
-        let output = system(cmd . ' '. join(cmd_opts) )
-        if v:shell_error
+        let error = 0
+        let output = ""
+        if filereadable(cmd)
+          let output = system(cmd . ' '. join(cmd_opts) )
+          let error = v:shell_error
+        else
+          let output = 'target filename do not exists. was :make executed?'
+        endif
+        if error
             echo 'MesonRun: ERROR'
         else
             echo 'MesonRun: OK'
@@ -329,7 +341,7 @@ endfunction
 function! MesonIntrospect(argument)
     let cmd = MesonCommand() . ' introspect ' . a:argument . ' ' . MesonBuildDir(MesonProjectDir())
     silent let output = system(cmd)
-    return json_decode(output)
+    silent return json_decode(output)
 endfunction
 
 " auto-complete meson configure arguments
