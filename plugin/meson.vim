@@ -416,8 +416,34 @@ function! MesonRunComplete(ArgLead, CmdLine, CursorPos)
     return result
 endfunction
 
+" meson test wrapper
+function! MesonTest(arguments)
+    let oldmakeprg = &l:makeprg
+    let &l:makeprg = MesonCommand() . ' test -C ' . MesonBuildDir(MesonProjectDir()) . ' ' . a:arguments
+    try
+        make
+    finally
+        let &l:makeprg = oldmakeprg
+    endtry
+endfunction
+
+" auto-complete meson test arguments
+function! MesonTestComplete(ArgLead, CmdLine, CursorPos)
+    let result = []
+    let options = MesonIntrospect('--tests')
+    let key = a:ArgLead
+    for opt in options
+        if opt.name =~# key
+            call add(result, opt.name)
+        endif
+    endfor
+    return result
+endfunction
+
 " quick access command
 command! -nargs=* -complete=customlist,MesonConfigureComplete MesonConfigure
     \ call MesonConfigure('<args>')
 command! -nargs=* -complete=customlist,MesonRunComplete MesonRun
     \ call MesonRun('<args>')
+command! -nargs=* -complete=customlist,MesonTestComplete MesonTest
+    \ call MesonTest('<args>')
