@@ -289,6 +289,17 @@ function! MesonConfigure(arguments)
     endif
 endfunction
 
+" ninja wrapper
+function! NinjaRun(arguments)
+    let oldmakeprg = &l:makeprg
+    let &l:makeprg = NinjaCommand() . ' -C ' . MesonBuildDir(MesonProjectDir()) . ' ' . a:arguments
+    try
+        make
+    finally
+        let &l:makeprg = oldmakeprg
+    endtry
+endfunction
+
 " meson run wrapper
 function! MesonRun(arguments)
     let options = MesonIntrospect('--targets')
@@ -312,36 +323,45 @@ function! MesonRun(arguments)
         let cmd = a:arguments
         let cmd_opts = []
         let target_found = 0
+        let type = ''
         for arg in split(a:arguments)
             if ! target_found
-              for opt in options
-                  if opt.name == arg
-                      let cmd = opt.filename[0]
-                      let target_found = 1
-                      break
-                  endif
-              endfor
-              if !target_found
-                call add(cmd_opts, arg)
-              endif
+                for opt in options
+                    if opt.name == arg
+                        let cmd = opt.filename[0]
+                        let target_found = 1
+                        let type = opt.type
+                        break
+                    endif
+                endfor
+                if !target_found
+                    call add(cmd_opts, arg)
+                endif
             else
                 call add(cmd_opts, arg)
             endif
         endfor
-        let error = 0
-        let output = ""
-        if filereadable(cmd)
-          let output = system(cmd . ' '. join(cmd_opts) )
-          let error = v:shell_error
+        if type ==# 'executable'
+            let error = 0
+            let output = ""
+            if !filereadable(cmd)
+                call NinjaRun(split(a:arguments)[0])
+            endif
+            if filereadable(cmd)
+                let output = system(cmd . ' '. join(cmd_opts) )
+                let error = v:shell_error
+            else
+                let output = 'target filename do not exists. was :make executed?'
+            endif
+            if error
+                echo 'MesonRun: ERROR'
+            else
+                echo 'MesonRun: OK'
+            endif
+            echo output
         else
-          let output = 'target filename do not exists. was :make executed?'
+            call NinjaRun(a:arguments)
         endif
-        if error
-            echo 'MesonRun: ERROR'
-        else
-            echo 'MesonRun: OK'
-        endif
-        echo output
     endif
 endfunction
 
@@ -428,16 +448,47 @@ function! MesonTest(arguments)
 endfunction
 
 " auto-complete meson test arguments
-function! MesonTestComplete(ArgLead, CmdLine, CursorPos)
+function! s:MesonTestCompleteImpl(ArgLead, CmdLine, CursorPos, type)
     let result = []
-    let options = MesonIntrospect('--tests')
     let key = a:ArgLead
-    for opt in options
-        if opt.name =~# key
-            call add(result, opt.name)
+    let allArgs = split(a:CmdLine)
+    let type = a:type
+    if index(allArgs, '--benchmark') != -1
+        let type = '--benchmarks'
+    endif
+    let args = split(a:CmdLine[:a:CursorPos])
+    let prevArg = ''
+    if len(args) != 0
+        if a:CmdLine[a:CursorPos-1] ==# ' '
+            let prevArg = args[len(args)-1]
+        else
+            let prevArg = args[len(args)-2]
+        endif
+    endif
+    let options = MesonIntrospect(type)
+    if prevArg ==# '--suite' || prevArg ==# '--no-suite'
+        let candidates = uniq(sort(flatten(map(options, {key, value -> value.suite}))))
+    else
+        let candidates = sort(map(options, {key, value -> value.name}))
+    endif
+    for c in candidates
+        if c =~# key
+            call add(result, c)
         endif
     endfor
     return result
+endfunction
+
+function! MesonTestComplete(ArgLead, CmdLine, CursorPos)
+    return s:MesonTestCompleteImpl(a:ArgLead, a:CmdLine, a:CursorPos, '--tests')
+endfunction
+
+function! MesonBenchmark(arguments)
+    call MesonTest('--benchmark ' . a:arguments)
+endfunction
+
+function! MesonBenchmarkComplete(ArgLead, CmdLine, CursorPos)
+    return s:MesonTestCompleteImpl(a:ArgLead, a:CmdLine, a:CursorPos, '--benchmarks')
 endfunction
 
 " quick access command
@@ -447,3 +498,5 @@ command! -nargs=* -complete=customlist,MesonRunComplete MesonRun
     \ call MesonRun('<args>')
 command! -nargs=* -complete=customlist,MesonTestComplete MesonTest
     \ call MesonTest('<args>')
+command! -nargs=* -complete=customlist,MesonBenchmarkComplete MesonBenchmark
+    \ call MesonBenchmark('<args>')
