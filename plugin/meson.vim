@@ -245,12 +245,7 @@ endfunction
 " meson configure wrapper
 function! MesonConfigure(arguments)
     if len(a:arguments) == 0
-        try
-            let options = MesonIntrospect('--buildoptions')
-        catch
-            echom 'Error parsing installation, was :MesonInit executed?'
-            return
-        endtry
+        let options = MesonIntrospect('--buildoptions')
         " sanitise
         for opt in options
             if opt.type ==# 'boolean'
@@ -281,7 +276,6 @@ function! MesonConfigure(arguments)
         let cmd = MesonCommand() . ' configure ' . a:arguments . ' ' . MesonBuildDir(MesonProjectDir())
         let output = system(cmd)
         if v:shell_error
-            echo 'MesonConfigure:'
             echo output
         else
             echo 'MesonConfigure: OK'
@@ -369,7 +363,10 @@ endfunction
 function! MesonIntrospect(argument)
     let cmd = MesonCommand() . ' introspect ' . a:argument . ' ' . MesonBuildDir(MesonProjectDir())
     silent let output = system(cmd)
-    silent return json_decode(output)
+    if v:shell_error
+        return []
+    endif
+    return json_decode(output)
 endfunction
 
 " auto-complete meson configure arguments
