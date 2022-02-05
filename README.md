@@ -49,6 +49,19 @@ Meson options can be changed via ``:MesonConfigure`` command:
 :MesonConfigure
 ```
 
+Meson tests, benchmarks and run targets can be executed via the following commands.
+
+```vim
+:MesonRun cppcheck             " run ninja cppcheck
+:MesonRun sha1_benchmark 1 2 3 " run sha1_benchmark executable with arguments 1 2 3
+:MesonRun                      " show all available targets
+:MesonTest sha1                " run meson test sha1
+:MesonTest                     " run all tests
+:MesonTest --suite sha         " run all tests from suite sha
+:MesonBenchmark                " run all benchmarks
+:MesonBenchmark sha1           " run sha1 benchmark
+```
+
 The plugin completes partially written arguments and current argument values,
 just hit <kbd>TAB</kbd> at any point in the command line.
 

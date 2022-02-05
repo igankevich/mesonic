@@ -245,7 +245,12 @@ endfunction
 " meson configure wrapper
 function! MesonConfigure(arguments)
     if len(a:arguments) == 0
-        let options = MesonIntrospect('--buildoptions')
+        try
+            let options = MesonIntrospect('--buildoptions')
+        catch
+            echom 'Error parsing installation, was :MesonInit executed?'
+            return
+        endtry
         " sanitise
         for opt in options
             if opt.type ==# 'boolean'
@@ -284,11 +289,87 @@ function! MesonConfigure(arguments)
     endif
 endfunction
 
+" ninja wrapper
+function! NinjaRun(arguments)
+    let oldmakeprg = &l:makeprg
+    let &l:makeprg = NinjaCommand() . ' -C ' . MesonBuildDir(MesonProjectDir()) . ' ' . a:arguments
+    try
+        make
+    finally
+        let &l:makeprg = oldmakeprg
+    endtry
+endfunction
+
+" meson run wrapper
+function! MesonRun(arguments)
+    let options = MesonIntrospect('--targets')
+    if len(a:arguments) == 0
+        " calculate column width
+        let width = [0,0]
+        for opt in options
+            let w = [len(opt.name), len(string(opt.filename[0]))]
+            for i in [0,1]
+                if w[i] > width[i]
+                    let width[i] = w[i]
+                endif
+            endfor
+        endfor
+        let format = '%' . width[0] . 's  %-' . width[1] . 's  %s'
+        " print options
+        for opt in options
+            echo printf(format, opt.name, opt.filename[0], opt.type)
+        endfor
+    else
+        let cmd = a:arguments
+        let cmd_opts = []
+        let target_found = 0
+        let type = ''
+        for arg in split(a:arguments)
+            if ! target_found
+                for opt in options
+                    if opt.name == arg
+                        let cmd = opt.filename[0]
+                        let target_found = 1
+                        let type = opt.type
+                        break
+                    endif
+                endfor
+                if !target_found
+                    call add(cmd_opts, arg)
+                endif
+            else
+                call add(cmd_opts, arg)
+            endif
+        endfor
+        if type ==# 'executable'
+            let error = 0
+            let output = ""
+            if !filereadable(cmd)
+                call NinjaRun(split(a:arguments)[0])
+            endif
+            if filereadable(cmd)
+                let output = system(cmd . ' '. join(cmd_opts) )
+                let error = v:shell_error
+            else
+                let output = 'target filename do not exists. was :make executed?'
+            endif
+            if error
+                echo 'MesonRun: ERROR'
+            else
+                echo 'MesonRun: OK'
+            endif
+            echo output
+        else
+            call NinjaRun(a:arguments)
+        endif
+    endif
+endfunction
+
 " meson introspect wrapper
 function! MesonIntrospect(argument)
     let cmd = MesonCommand() . ' introspect ' . a:argument . ' ' . MesonBuildDir(MesonProjectDir())
     silent let output = system(cmd)
-    return json_decode(output)
+    silent return json_decode(output)
 endfunction
 
 " auto-complete meson configure arguments
@@ -342,6 +423,80 @@ function! MesonConfigureComplete(ArgLead, CmdLine, CursorPos)
     return result
 endfunction
 
+" auto-complete meson run arguments
+function! MesonRunComplete(ArgLead, CmdLine, CursorPos)
+    let result = []
+    let options = MesonIntrospect('--targets')
+    let key = a:ArgLead
+    for opt in options
+        if opt.name =~# key
+            call add(result, opt.name)
+        endif
+    endfor
+    return result
+endfunction
+
+" meson test wrapper
+function! MesonTest(arguments)
+    let oldmakeprg = &l:makeprg
+    let &l:makeprg = MesonCommand() . ' test -C ' . MesonBuildDir(MesonProjectDir()) . ' ' . a:arguments
+    try
+        make
+    finally
+        let &l:makeprg = oldmakeprg
+    endtry
+endfunction
+
+" auto-complete meson test arguments
+function! s:MesonTestCompleteImpl(ArgLead, CmdLine, CursorPos, type)
+    let result = []
+    let key = a:ArgLead
+    let allArgs = split(a:CmdLine)
+    let type = a:type
+    if index(allArgs, '--benchmark') != -1
+        let type = '--benchmarks'
+    endif
+    let args = split(a:CmdLine[:a:CursorPos])
+    let prevArg = ''
+    if len(args) != 0
+        if a:CmdLine[a:CursorPos-1] ==# ' '
+            let prevArg = args[len(args)-1]
+        else
+            let prevArg = args[len(args)-2]
+        endif
+    endif
+    let options = MesonIntrospect(type)
+    if prevArg ==# '--suite' || prevArg ==# '--no-suite'
+        let candidates = uniq(sort(flatten(map(options, {key, value -> value.suite}))))
+    else
+        let candidates = sort(map(options, {key, value -> value.name}))
+    endif
+    for c in candidates
+        if c =~# key
+            call add(result, c)
+        endif
+    endfor
+    return result
+endfunction
+
+function! MesonTestComplete(ArgLead, CmdLine, CursorPos)
+    return s:MesonTestCompleteImpl(a:ArgLead, a:CmdLine, a:CursorPos, '--tests')
+endfunction
+
+function! MesonBenchmark(arguments)
+    call MesonTest('--benchmark ' . a:arguments)
+endfunction
+
+function! MesonBenchmarkComplete(ArgLead, CmdLine, CursorPos)
+    return s:MesonTestCompleteImpl(a:ArgLead, a:CmdLine, a:CursorPos, '--benchmarks')
+endfunction
+
 " quick access command
 command! -nargs=* -complete=customlist,MesonConfigureComplete MesonConfigure
     \ call MesonConfigure('<args>')
+command! -nargs=* -complete=customlist,MesonRunComplete MesonRun
+    \ call MesonRun('<args>')
+command! -nargs=* -complete=customlist,MesonTestComplete MesonTest
+    \ call MesonTest('<args>')
+command! -nargs=* -complete=customlist,MesonBenchmarkComplete MesonBenchmark
+    \ call MesonBenchmark('<args>')

@@ -54,6 +54,8 @@ The directory will be initialised if it does not exist or does not contain
 via b:meson_command variable. Later options can be changed via
 |:MesonConfigure| command.
 
+After |:make| you can run targets using |:MesonRun|
+
 ================================================================================
 3. Meson options                                *mesonic-options* *:MesonConfigure*
 
@@ -84,6 +86,14 @@ If you then hit `TAB`, one more time it becomes >
 
 When called without arguments, |:MesonConfigure| shows current configuration.
 
+================================================================================
+4. Run targets                                 *mesonic-run-targets* *:MesonRun*
+
+Meson can introspect targets so mesonic eases to run them, autocompleting its
+names
+
+	:MesonRun <target>
+     
 ================================================================================
 4. File navigation                                     *mesonic-navigation* *gb*
 
