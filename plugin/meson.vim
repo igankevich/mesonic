@@ -80,7 +80,7 @@ function! g:MesonInit(directory, bang)
     if !filereadable(l:build_dir . '/build.ninja')
         let oldmakeprg = &l:makeprg
         let olderrorformat = &l:errorformat
-        let &l:makeprg = g:MesonCommand() . ' ' . l:project_dir . ' ' . l:build_dir
+        let &l:makeprg = g:MesonCommand() . ' setup ' . l:project_dir . ' ' . l:build_dir
         let &l:errorformat = '%f:%l:%c: %m'
         try
             make
