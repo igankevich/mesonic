@@ -17,7 +17,7 @@ can be either global or buffer local. Defaults are listed below.
 
 ```vim
 let b:meson_command = 'meson'
-let b:meson_ninja_command = 'ninja'        " ninja-build on Fedora
+let b:meson_ninja_command = 'meson compile'  " ninja in old Meson versions
 ```
 
 If you want to switch between build directories, issue ``:MesonInit`` command

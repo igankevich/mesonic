@@ -52,9 +52,10 @@ function! g:MesonCommand()
     return l:cmd
 endfunction
 
-" Ninja build executable (defaults to 'ninja')
+" Meson compile command (defaults to 'meson compile', was 'ninja' in old
+" Meson versions).
 function! g:NinjaCommand()
-    let l:cmd = 'ninja'
+    let l:cmd = 'meson compile'
     if exists('b:meson_ninja_command')
         let l:cmd = b:meson_ninja_command
     elseif exists('g:meson_ninja_command')
