@@ -13,20 +13,21 @@ function! g:MesonProjectDir()
     let l:dir = getcwd()      " a starting directory to look for meson.build file
     let l:project_dir = l:dir " the top-most directory with meson.build file
     let l:nesting = 100       " maximal no. of subdirectories in a project
+    let l:found = 0           " found the first meson.build file
 
     " find top-most directory with readable meson.build file
-    while fnamemodify(l:dir, ':p') !=# '/' && l:nesting > 0
+    while l:nesting > 0
         if filereadable(l:dir . '/' . 'meson.build')
+            let l:found = 1
             let l:project_dir = l:dir
+        elseif l:found == 1
+            break
         endif
         let l:dir = l:dir . '/..'
         let l:nesting = l:nesting - 1
     endwhile
 
-    " why one needs to do it two times?
-    let l:project_dir = fnamemodify(l:project_dir, ':p')
-    let l:project_dir = fnamemodify(l:project_dir, ':p')
-    return l:project_dir
+    return fnamemodify(l:project_dir, ':p')
 
 endfunction
 
