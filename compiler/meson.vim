@@ -8,7 +8,19 @@ endif
 let current_compiler = 'meson'
 
 function! s:GetCwdRelativeToProjectDirectory(project_dir)
-    return substitute(getcwd().'/', fnameescape(a:project_dir), '', 'g')
+    let l:project_dir = a:project_dir
+    let l:dir = getcwd()
+    let l:nesting = 100
+    let l:relative_dir = ''
+    while l:nesting > 0
+        if fnamemodify(l:dir, ':p') ==# fnamemodify(l:project_dir, ':p')
+            break
+        endif
+        let l:relative_dir = fnamemodify(l:dir, ':t') . '/' . l:relative_dir
+        let l:dir = fnamemodify(l:dir, ':h')
+        let l:nesting = l:nesting - 1
+    endwhile
+    return l:relative_dir
 endfunction
 
 function! s:IsLocalOption()
